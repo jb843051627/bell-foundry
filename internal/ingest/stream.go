@@ -22,7 +22,7 @@ type Stream struct {
 	once     sync.Once
 	handler  func(Reading) error
 	mu       sync.RWMutex
-	lastErr  error
+	prevErr  error
 	accepted uint64
 	dropped  uint64
 }
@@ -47,7 +47,7 @@ func (s *Stream) loop() {
 			}
 			if err := s.handler(reading); err != nil {
 				s.mu.Lock()
-				s.lastErr = err
+				s.prevErr = err
 				s.mu.Unlock()
 			} else {
 				s.mu.Lock()
@@ -89,8 +89,8 @@ func (s *Stream) Close() {
 }
 
 // Stats 返回流的接收、丢弃和最后错误快照。
-func (s *Stream) Stats() (accepted, dropped uint64, lastErr error) {
+func (s *Stream) Stats() (accepted, dropped uint64, prevErr error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	return s.accepted, s.dropped, s.lastErr
+	return s.accepted, s.dropped, s.prevErr
 }
