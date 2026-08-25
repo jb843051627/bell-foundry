@@ -155,3 +155,18 @@ func ResolveInspectionReference(value *model.Inspection) (string, error) {
 func ResolveCurveReference(value *model.CoolingCurve) (string, error) {
 	return model.CurveReference(value)
 }
+
+// ReadSampleAt 读取温度采样。
+func ReadSampleAt(samples []model.TemperatureReading, index int) (model.TemperatureReading, error) {
+	return model.SampleAt(samples, index)
+}
+
+// ReadPartialAt 读取五分音。
+func ReadPartialAt(partials []float64, index int) (float64, error) {
+	return model.PartialAt(partials, index)
+}
+
+// ReadDefectAt 读取缺陷。
+func ReadDefectAt(defects []model.Defect, index int) (model.Defect, error) {
+	return model.DefectAt(defects, index)
+}

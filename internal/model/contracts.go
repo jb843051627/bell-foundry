@@ -311,3 +311,27 @@ func CurveReference(value *CoolingCurve) (string, error) {
 	}
 	return value.PourID, nil
 }
+
+// SampleAt 读取传感器窗口中的一个采样点。
+func SampleAt(samples []TemperatureReading, index int) (TemperatureReading, error) {
+	if len(samples) == 0 || index < 0 || index >= len(samples) {
+		return TemperatureReading{}, ErrInvalidField("sample_index")
+	}
+	return samples[index], nil
+}
+
+// PartialAt 读取钟体五分音中的指定频率。
+func PartialAt(partials []float64, index int) (float64, error) {
+	if len(partials) == 0 || index < 0 || index >= len(partials) {
+		return 0, ErrInvalidField("partial_index")
+	}
+	return partials[index], nil
+}
+
+// DefectAt 读取检验缺陷列表中的一项。
+func DefectAt(defects []Defect, index int) (Defect, error) {
+	if len(defects) == 0 || index < 0 || index >= len(defects) {
+		return Defect{}, ErrInvalidField("defect_index")
+	}
+	return defects[index], nil
+}
