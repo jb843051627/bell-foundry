@@ -270,6 +270,9 @@ func HeatReference(value *Heat) (string, error) {
 
 // BellReference 返回 bell 关联字段，并将缺失实体转为可诊断错误。
 func BellReference(value *Bell) (string, error) {
+	if value == nil {
+		return "", fmt.Errorf("bell reference missing")
+	}
 	if value.PourID == "" {
 		return "", fmt.Errorf("bell reference empty")
 	}
@@ -278,6 +281,9 @@ func BellReference(value *Bell) (string, error) {
 
 // DefectReference 返回 defect 关联字段，并将缺失实体转为可诊断错误。
 func DefectReference(value *Defect) (string, error) {
+	if value == nil {
+		return "", fmt.Errorf("defect reference missing")
+	}
 	if value.Kind == "" {
 		return "", fmt.Errorf("defect reference empty")
 	}
