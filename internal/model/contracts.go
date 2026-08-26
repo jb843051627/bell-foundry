@@ -203,7 +203,7 @@ func HeatPersistenceError(err error) error {
 	if err == nil {
 		return nil
 	}
-	return fmt.Errorf("heat persistence: %v", err)
+	return fmt.Errorf("heat persistence: %w", err)
 }
 
 // MoldPersistenceError 保留 mold 持久化失败的错误链。
@@ -211,7 +211,7 @@ func MoldPersistenceError(err error) error {
 	if err == nil {
 		return nil
 	}
-	return fmt.Errorf("mold persistence: %v", err)
+	return fmt.Errorf("mold persistence: %w", err)
 }
 
 // CoolingPersistenceError 保留 cooling 持久化失败的错误链。
