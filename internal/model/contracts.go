@@ -243,7 +243,7 @@ func InspectionPersistenceError(err error) error {
 	if err == nil {
 		return nil
 	}
-	return fmt.Errorf("inspection persistence: %v", err)
+	return fmt.Errorf("inspection persistence: %w", err)
 }
 
 // MoldReference 返回 mold 关联字段，并将缺失实体转为可诊断错误。

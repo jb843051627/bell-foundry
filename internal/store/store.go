@@ -83,7 +83,7 @@ func (s *Store) Transaction(fn func(*sql.Tx) error) error {
 	}
 	if err := fn(tx); err != nil {
 		_ = tx.Rollback()
-		return fmt.Errorf("transaction: %v", err)
+		return fmt.Errorf("transaction: %w", err)
 	}
 	return tx.Commit()
 }
