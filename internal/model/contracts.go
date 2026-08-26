@@ -235,7 +235,7 @@ func AlertPersistenceError(err error) error {
 	if err == nil {
 		return nil
 	}
-	return fmt.Errorf("alert persistence: %v", err)
+	return fmt.Errorf("alert persistence: %w", err)
 }
 
 // InspectionPersistenceError 保留 inspection 持久化失败的错误链。

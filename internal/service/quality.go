@@ -97,7 +97,9 @@ func (l *Lab) RaiseAlert(ctx context.Context, subject, level, message string) (*
 	if err := l.save(ctx, "alert", alert.ID, alert); err != nil {
 		return nil, err
 	}
-	_ = l.sink.Send(ctx, notify.Message{Subject: subject, Level: level, Body: message})
+	if err := l.sink.Send(ctx, notify.Message{Subject: subject, Level: level, Body: message}); err != nil {
+		return &alert, fmt.Errorf("%w: %s: %w", notify.ErrDeliveryFailed, subject, err)
+	}
 	return &alert, nil
 }
 

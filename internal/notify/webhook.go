@@ -2,9 +2,15 @@ package notify
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"sync"
 )
+
+// ErrDeliveryFailed 表示告警投递到通知出口失败（如 webhook 不可用）。
+// RaiseAlert 用它包装 sink.Send 返回的错误并保留底层错误链，
+// 便于上层用 errors.Is(err, ErrDeliveryFailed) 识别投递失败而非误判为已发送。
+var ErrDeliveryFailed = errors.New("notify: alert delivery failed")
 
 // Message 是向值班人员投递的告警消息。
 type Message struct {

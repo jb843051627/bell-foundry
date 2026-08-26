@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/jb843051627/bell-foundry/internal/model"
+	"github.com/jb843051627/bell-foundry/internal/notify"
 )
 
 func writeJSON(w http.ResponseWriter, status int, value any) {
@@ -20,6 +21,8 @@ func writeError(w http.ResponseWriter, err error) {
 		status = http.StatusNotFound
 	} else if errors.Is(err, model.ErrPreconditionFailed) || errors.Is(err, model.ErrBadTransition) {
 		status = http.StatusConflict
+	} else if errors.Is(err, notify.ErrDeliveryFailed) {
+		status = http.StatusBadGateway
 	}
 	writeJSON(w, status, map[string]any{"error": err.Error()})
 }
