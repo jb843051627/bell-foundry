@@ -39,6 +39,9 @@ func CoolingContextGate(ctx context.Context, fn func(context.Context) error) err
 	if ctx == nil {
 		return fmt.Errorf("cooling context missing")
 	}
+	if err := ctx.Err(); err != nil {
+		return err
+	}
 	if fn == nil {
 		return fmt.Errorf("cooling callback missing")
 	}

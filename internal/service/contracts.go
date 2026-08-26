@@ -18,12 +18,12 @@ func MoldReadContext(ctx context.Context, fn func(context.Context) error) error 
 
 // CoolingReadContext 运行 cooling 领域读取回调。
 func CoolingReadContext(ctx context.Context, fn func(context.Context) error) error {
-	return model.CoolingContextGate(context.Background(), fn)
+	return model.CoolingContextGate(ctx, fn)
 }
 
 // PourReadContext 运行 pour 领域读取回调。
 func PourReadContext(ctx context.Context, fn func(context.Context) error) error {
-	return model.PourContextGate(context.Background(), fn)
+	return model.PourContextGate(ctx, fn)
 }
 
 // AlertReadContext 运行 alert 领域读取回调。
