@@ -20,12 +20,19 @@ type Queue struct {
 func New(size int) *Queue {
 	q := &Queue{jobs: make(chan Job, size), stop: make(chan struct{})}
 	q.wg.Add(1)
+	go q.loop()
 	return q
 }
 func (q *Queue) loop() {
+	defer q.wg.Done()
 	for {
 		select {
-		case job := <-q.jobs:
+		case <-q.stop:
+			return
+		case job, ok := <-q.jobs:
+			if !ok {
+				return
+			}
 			err := job.Run(context.Background())
 			select {
 			case job.Done <- err:
@@ -36,10 +43,17 @@ func (q *Queue) loop() {
 }
 func (q *Queue) Submit(ctx context.Context, job Job) error {
 	select {
+	case <-q.stop:
+		return context.Canceled
+	default:
+	}
+	select {
 	case q.jobs <- job:
 		return nil
 	case <-ctx.Done():
 		return ctx.Err()
+	case <-q.stop:
+		return context.Canceled
 	}
 }
 func (q *Queue) Close() { q.once.Do(func() { close(q.stop); q.wg.Wait() }) }
