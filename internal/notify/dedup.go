@@ -21,7 +21,12 @@ func NewDeduper(ttl time.Duration) *Deduper {
 }
 
 // Allow 检查并登记一个键，返回是否允许发送。
+// 多路传感器或并发的 HTTP 请求可能同时为同一告警窗口调用本方法，
+// 因此整个"清理过期项 → 查重 → 登记"过程必须在锁内原子完成，
+// 否则两个 goroutine 会同时通过查重检查并都返回 true，导致同一窗口重复推送。
 func (d *Deduper) Allow(key string, now time.Time) bool {
+	d.mu.Lock()
+	defer d.mu.Unlock()
 	for old, at := range d.items {
 		if now.Sub(at) >= d.ttl {
 			delete(d.items, old)
@@ -36,5 +41,7 @@ func (d *Deduper) Allow(key string, now time.Time) bool {
 
 // Size 返回当前未过期键数量。
 func (d *Deduper) Size() int {
+	d.mu.Lock()
+	defer d.mu.Unlock()
 	return len(d.items)
 }
