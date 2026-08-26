@@ -20,9 +20,9 @@ func NewHealthCollector() *HealthCollector {
 
 // ObserveRequest 记录一次请求。
 func (h *HealthCollector) ObserveRequest(duration time.Duration, failed bool) {
-	h.requests.Store(h.requests.Load() + 1)
+	h.requests.Add(1)
 	if failed {
-		h.failures.Store(h.failures.Load() + 1)
+		h.failures.Add(1)
 	}
 	h.latency.Add(Point{At: time.Now().UTC(), Value: duration.Seconds()})
 }
@@ -39,4 +39,4 @@ func (h *HealthCollector) Snapshot() map[string]any {
 }
 
 // Reset 只重置计数，保留启动时间和延迟窗口。
-func (h *HealthCollector) Reset() { h.requests = atomic.Uint64{}; h.failures = atomic.Uint64{} }
+func (h *HealthCollector) Reset() { h.requests.Store(0); h.failures.Store(0) }
