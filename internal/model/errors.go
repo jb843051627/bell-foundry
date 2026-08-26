@@ -18,6 +18,11 @@ var (
 	ErrPreconditionFailed  = fmt.Errorf("model: precondition failed")
 	ErrNotFullyMeasured    = fmt.Errorf("model: partials not fully measured")
 	ErrCurveIncomplete     = fmt.Errorf("model: cooling curve incomplete")
+
+	// 落库/投递失败哨兵，供值班接口用 errors.Is 区分数据库失败与通知失败。
+	ErrAlertPersistence      = fmt.Errorf("model: alert persistence failed")
+	ErrAlertDelivery         = fmt.Errorf("model: alert delivery failed")
+	ErrInspectionPersistence = fmt.Errorf("model: inspection persistence failed")
 )
 
 // Wrapf 在领域错误上附加上下文，保留 %w 错误链。

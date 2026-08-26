@@ -16,12 +16,22 @@ func writeJSON(w http.ResponseWriter, status int, value any) {
 
 func writeError(w http.ResponseWriter, err error) {
 	status := http.StatusBadRequest
-	if errors.Is(err, model.ErrNotFound) {
+	kind := "bad_request"
+	switch {
+	case errors.Is(err, model.ErrNotFound):
 		status = http.StatusNotFound
-	} else if errors.Is(err, model.ErrPreconditionFailed) || errors.Is(err, model.ErrBadTransition) {
+		kind = "not_found"
+	case errors.Is(err, model.ErrPreconditionFailed) || errors.Is(err, model.ErrBadTransition):
 		status = http.StatusConflict
+		kind = "conflict"
+	case errors.Is(err, model.ErrAlertPersistence) || errors.Is(err, model.ErrInspectionPersistence):
+		status = http.StatusServiceUnavailable
+		kind = "database"
+	case errors.Is(err, model.ErrAlertDelivery):
+		status = http.StatusBadGateway
+		kind = "notification"
 	}
-	writeJSON(w, status, map[string]any{"error": err.Error()})
+	writeJSON(w, status, map[string]any{"kind": kind, "error": err.Error()})
 }
 
 func decodeJSON(r *http.Request, target any) error {

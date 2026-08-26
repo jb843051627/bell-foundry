@@ -27,7 +27,7 @@ func (l *Lab) CreateInspection(ctx context.Context, inspection model.Inspection)
 		inspection.Verdict = model.VerdictReview
 	}
 	if err := l.save(ctx, "inspection", inspection.ID, inspection); err != nil {
-		return nil, err
+		return nil, model.InspectionPersistenceError(err)
 	}
 	_ = l.event(inspection.ID, "inspection.created")
 	return &inspection, nil

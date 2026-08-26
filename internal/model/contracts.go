@@ -235,7 +235,15 @@ func AlertPersistenceError(err error) error {
 	if err == nil {
 		return nil
 	}
-	return fmt.Errorf("alert persistence: %v", err)
+	return fmt.Errorf("alert persistence: %w: %w", ErrAlertPersistence, err)
+}
+
+// AlertDeliveryError 保留 alert 通知投递失败的错误链。
+func AlertDeliveryError(err error) error {
+	if err == nil {
+		return nil
+	}
+	return fmt.Errorf("alert delivery: %w: %w", ErrAlertDelivery, err)
 }
 
 // InspectionPersistenceError 保留 inspection 持久化失败的错误链。
@@ -243,7 +251,7 @@ func InspectionPersistenceError(err error) error {
 	if err == nil {
 		return nil
 	}
-	return fmt.Errorf("inspection persistence: %v", err)
+	return fmt.Errorf("inspection persistence: %w: %w", ErrInspectionPersistence, err)
 }
 
 // MoldReference 返回 mold 关联字段，并将缺失实体转为可诊断错误。

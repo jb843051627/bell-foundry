@@ -95,10 +95,10 @@ func (l *Lab) RaiseAlert(ctx context.Context, subject, level, message string) (*
 	}
 	alert := model.Alert{ID: model.NewID(model.PrefixAlert), Subject: subject, Level: level, Message: message, CreatedAt: l.now()}
 	if err := l.save(ctx, "alert", alert.ID, alert); err != nil {
-		return nil, err
+		return nil, model.AlertPersistenceError(err)
 	}
 	if err := l.sink.Send(ctx, notify.Message{Subject: subject, Level: level, Body: message}); err != nil {
-		return nil, err
+		return nil, model.AlertDeliveryError(err)
 	}
 	return &alert, nil
 }

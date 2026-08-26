@@ -121,6 +121,11 @@ func PersistAlertResult(err error) error {
 	return model.AlertPersistenceError(err)
 }
 
+// DeliverAlertResult 传播 alert 通知投递失败。
+func DeliverAlertResult(err error) error {
+	return model.AlertDeliveryError(err)
+}
+
 // PersistInspectionResult 传播 inspection 写入失败。
 func PersistInspectionResult(err error) error {
 	return model.InspectionPersistenceError(err)
