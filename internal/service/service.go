@@ -75,7 +75,7 @@ func (l *Lab) load(ctx context.Context, kind, id string, value any) error {
 		return fmt.Errorf("load %s: %w", kind, err)
 	}
 	if err := l.repo.Load(kind, id, value); err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return model.Wrapf(model.ErrNotFound, "%s/%s", kind, id)
 		}
 		return err
