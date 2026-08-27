@@ -101,6 +101,11 @@ func NewLedger() *Ledger { return &Ledger{values: make(map[string]int)} }
 
 // Add 原子地累加一个工艺计数。
 func (l *Ledger) Add(key string, delta int) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	if l.values == nil {
+		l.values = make(map[string]int)
+	}
 	l.values[key] += delta
 }
 
@@ -116,6 +121,8 @@ func (l *Ledger) AddUnsafe(key string, delta int) {
 
 // Value 读取计数。
 func (l *Ledger) Value(key string) int {
+	l.mu.Lock()
+	defer l.mu.Unlock()
 	return l.values[key]
 }
 
